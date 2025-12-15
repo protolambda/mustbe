@@ -21,6 +21,10 @@ What makes this one unique:
     You can bring your own `Assertion` implementations when really needed.
 - No external dependencies
 
-# License
+## Usage
+
+See [example test](./must_example_test.go).
+
+## License
 
 MIT License, see [LICENSE](./LICENSE) file.
