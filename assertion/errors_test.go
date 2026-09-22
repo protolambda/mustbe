@@ -54,6 +54,37 @@ func TestErrorIs(t *testing.T) {
 	})
 }
 
+func TestErrContains(t *testing.T) {
+	t.Run("Error contains substring", func(t *testing.T) {
+		a := assertion.ErrContains{V: errors.New("failed to read file"), Sub: "read"}
+		err := a.Check(context.Background())
+		expectNoError(t, err)
+		expectString(t, a.String(), `errContains(err: failed to read file, sub: "read")`)
+	})
+	t.Run("Error does not contain substring", func(t *testing.T) {
+		a := assertion.ErrContains{V: errors.New("failed to read file"), Sub: "write"}
+		err := a.Check(context.Background())
+		expectError(t, err)
+		expectString(t, a.String(), `errContains(err: failed to read file, sub: "write")`)
+	})
+	t.Run("Nil error", func(t *testing.T) {
+		a := assertion.ErrContains{V: nil, Sub: "failure"}
+		err := a.Check(context.Background())
+		expectError(t, err)
+		expectString(t, a.String(), `errContains(err: <nil>, sub: "failure")`)
+	})
+	t.Run("Empty substring", func(t *testing.T) {
+		a := assertion.ErrContains{V: errSentinel, Sub: ""}
+		err := a.Check(context.Background())
+		expectNoError(t, err)
+	})
+	t.Run("Case sensitive", func(t *testing.T) {
+		a := assertion.ErrContains{V: errors.New("Failed"), Sub: "failed"}
+		err := a.Check(context.Background())
+		expectError(t, err)
+	})
+}
+
 func TestNoError(t *testing.T) {
 	t.Run("Nil error", func(t *testing.T) {
 		a := assertion.NoError{V: nil}
