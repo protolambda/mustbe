@@ -12,6 +12,8 @@ type OfType[T any] struct {
 	V any
 }
 
+var _ Assertion = OfType[int]{}
+
 func (s OfType[T]) String() string {
 	return fmt.Sprintf("isOfType(v: %v, type: %s)", s.V, reflect.TypeFor[T]())
 }
@@ -29,6 +31,8 @@ func (s OfType[T]) Check(ctx context.Context) error {
 type Implemented[T any] struct {
 	V any
 }
+
+var _ Assertion = Implemented[error]{}
 
 func (s Implemented[T]) String() string {
 	return fmt.Sprintf("isImplemented(v: %v, interface: %s)", s.V, reflect.TypeFor[T]())

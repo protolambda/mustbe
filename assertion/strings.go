@@ -20,7 +20,7 @@ func (s Substring) String() string {
 
 func (s Substring) Check(ctx context.Context) error {
 	if !strings.Contains(s.V, s.Sub) {
-		return fmt.Errorf("string %s does not contain substring %q", s.V, s.Sub)
+		return fmt.Errorf("string %q does not contain substring %q", s.V, s.Sub)
 	}
 	return nil
 }
@@ -39,7 +39,7 @@ func (s Prefix) String() string {
 
 func (s Prefix) Check(ctx context.Context) error {
 	if !strings.HasPrefix(s.V, s.Prefix) {
-		return fmt.Errorf("string %s does not have prefix %q", s.V, s.Prefix)
+		return fmt.Errorf("string %q does not have prefix %q", s.V, s.Prefix)
 	}
 	return nil
 }
@@ -58,7 +58,7 @@ func (s Suffix) String() string {
 
 func (s Suffix) Check(ctx context.Context) error {
 	if !strings.HasSuffix(s.V, s.Suffix) {
-		return fmt.Errorf("string %s does not have suffix %q", s.V, s.Suffix)
+		return fmt.Errorf("string %q does not have suffix %q", s.V, s.Suffix)
 	}
 	return nil
 }

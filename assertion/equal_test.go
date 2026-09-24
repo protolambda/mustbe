@@ -87,6 +87,17 @@ func TestDeepEqual(t *testing.T) {
 		}
 		err := a.Check(context.Background())
 		expectError(t, err)
+		expectString(t, err.Error(), "not deep-equal, expected: [1 2 3], got: [1 2 4]")
+	})
+	t.Run("Unequal structs show fields", func(t *testing.T) {
+		type item struct {
+			Name string
+			N    int
+		}
+		a := assertion.DeepEqual[item]{Expected: item{Name: "a", N: 1}, Got: item{Name: "a", N: 2}}
+		err := a.Check(context.Background())
+		expectError(t, err)
+		expectString(t, err.Error(), "not deep-equal, expected: {Name:a N:1}, got: {Name:a N:2}")
 	})
 	t.Run("Equal byte slices", func(t *testing.T) {
 		a := assertion.DeepEqual[[]byte]{
@@ -103,6 +114,7 @@ func TestDeepEqual(t *testing.T) {
 		}
 		err := a.Check(context.Background())
 		expectError(t, err)
+		expectString(t, err.Error(), "byte slices differ, expected: 010203, got: 010204")
 	})
 	t.Run("Equal maps", func(t *testing.T) {
 		a := assertion.DeepEqual[map[string]int]{

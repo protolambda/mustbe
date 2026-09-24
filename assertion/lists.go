@@ -104,7 +104,27 @@ func (d Descending[V]) Check(ctx context.Context) error {
 	return nil
 }
 
-// InList asserts that V is contained in the list
+// Contains asserts that Item is contained in List.
+type Contains[V comparable] struct {
+	List []V
+	Item V
+}
+
+var _ Assertion = Contains[int]{}
+
+func (c Contains[V]) String() string {
+	return fmt.Sprintf("contains(list: %d items, item: %v)", len(c.List), c.Item)
+}
+
+func (c Contains[V]) Check(ctx context.Context) error {
+	if slices.Contains(c.List, c.Item) {
+		return nil
+	}
+	return fmt.Errorf("item %v not found in list", c.Item)
+}
+
+// InList asserts that Item is contained in List.
+// Contains is equivalent, and named after slices.Contains to match the argument order.
 type InList[V comparable] struct {
 	List []V
 	Item V
