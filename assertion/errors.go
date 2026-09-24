@@ -26,24 +26,47 @@ func (e ErrorIs) Check(ctx context.Context) error {
 	return nil
 }
 
-// ErrContains asserts that the given error is non-nil and its message contains Sub.
-type ErrContains struct {
+// ErrorContains asserts that the given error is non-nil and its message contains Sub.
+type ErrorContains struct {
 	V   error
 	Sub string
 }
 
-var _ Assertion = ErrContains{}
+var _ Assertion = ErrorContains{}
 
-func (e ErrContains) String() string {
-	return fmt.Sprintf("errContains(err: %v, sub: %q)", e.V, e.Sub)
+func (e ErrorContains) String() string {
+	return fmt.Sprintf("errorContains(err: %v, sub: %q)", e.V, e.Sub)
 }
 
-func (e ErrContains) Check(ctx context.Context) error {
+func (e ErrorContains) Check(ctx context.Context) error {
 	if e.V == nil {
 		return errors.New("expected non-nil error")
 	}
 	if !strings.Contains(e.V.Error(), e.Sub) {
 		return fmt.Errorf("err %q does not contain substring %q", e.V, e.Sub)
+	}
+	return nil
+}
+
+// ErrContains asserts that the given error is non-nil and its message contains Sub.
+//
+// Deprecated: use ErrorContains instead.
+type ErrContains = ErrorContains
+
+// Error asserts that the given error is non-nil.
+type Error struct {
+	V error
+}
+
+var _ Assertion = Error{}
+
+func (e Error) String() string {
+	return fmt.Sprintf("hasError(%v)", e.V)
+}
+
+func (e Error) Check(ctx context.Context) error {
+	if e.V == nil {
+		return errors.New("expected an error but got nil")
 	}
 	return nil
 }
