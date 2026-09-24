@@ -15,13 +15,23 @@ What makes this one unique:
   - `t.Must(assertion.Equal{Expected: a, Got: b})`: optional named args
 - Small improvements over other assertion libraries:
   - `InDelta` without precision-loss or unnecessary float conversion.
-  - `Eventually` that handles a panicking inner function.
-  - `Equal` (shallow) and `DeepEqual` separated.
+  - `Eventually` that handles a panicking inner function, and reports the last error.
+  - `Equal` (shallow, `==` on `comparable` types) and `DeepEqual` (`reflect.DeepEqual`) separated.
   - No unnecessary out-there assertions like YAML-encoded-comparison.
     You can bring your own `Assertion` implementations when really needed.
 - No external dependencies
 
 ## Usage
+
+```go
+func TestFoo(gt *testing.T) {
+	t := mustbe.WrapT(gt)
+	v, err := foo()
+	t.Must(be.NoError(err))
+	t.Must(be.Positive(v))
+	t.Mustf(be.Contains(list, v), "listing for %d", v)
+}
+```
 
 See [example test](./must_example_test.go).
 

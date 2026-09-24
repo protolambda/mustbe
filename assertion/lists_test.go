@@ -246,3 +246,22 @@ func TestInList(t *testing.T) {
 		expectString(t, a.String(), "isInList(item: 42, list: 1 items)")
 	})
 }
+
+func TestContains(t *testing.T) {
+	t.Run("Item present", func(t *testing.T) {
+		a := assertion.Contains[int]{List: []int{1, 2, 3}, Item: 2}
+		err := a.Check(context.Background())
+		expectNoError(t, err)
+		expectString(t, a.String(), "contains(list: 3 items, item: 2)")
+	})
+	t.Run("Item absent", func(t *testing.T) {
+		a := assertion.Contains[string]{List: []string{"a"}, Item: "b"}
+		err := a.Check(context.Background())
+		expectError(t, err)
+	})
+	t.Run("Nil list", func(t *testing.T) {
+		a := assertion.Contains[int]{List: nil, Item: 0}
+		err := a.Check(context.Background())
+		expectError(t, err)
+	})
+}
