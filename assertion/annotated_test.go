@@ -2,7 +2,9 @@ package assertion_test
 
 import (
 	"context"
+	"errors"
 	"testing"
+	"time"
 
 	"github.com/protolambda/mustbe/assertion"
 )
@@ -65,5 +67,27 @@ func TestAnnotated(t *testing.T) {
 		err := a.Check(context.Background())
 		expectNoError(t, err)
 		expectString(t, a.String(), "checking answer: isEqual(expected: 42, got: 42)")
+	})
+	t.Run("Annotated failure includes message", func(t *testing.T) {
+		a := assertion.Annotated{
+			Inner: assertion.Equal[int]{Expected: 1, Got: 2},
+			Msg:   "value %d",
+			Args:  []any{7},
+		}
+		err := a.Check(context.Background())
+		expectError(t, err)
+		expectString(t, err.Error(), "not equal, expected: 1, got: 2: value 7")
+	})
+	t.Run("Annotated failure wraps inner error", func(t *testing.T) {
+		a := assertion.Annotated{
+			Inner: assertion.Eventually{Fn: func(ctx context.Context) error { return nil }, Tick: time.Millisecond, Attempts: 1},
+			Msg:   "msg",
+		}
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel()
+		err := a.Check(ctx)
+		if !errors.Is(err, context.Canceled) {
+			t.Errorf("expected wrapped context.Canceled, got %v", err)
+		}
 	})
 }

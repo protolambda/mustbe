@@ -34,6 +34,13 @@ func Descending[V cmp.Ordered](list []V) assertion.Assertion {
 }
 
 // InList asserts that the given item is contained in the list.
+// See Contains, which is equivalent.
 func InList[V comparable](list []V, item V) assertion.Assertion {
 	return assertion.InList[V]{List: list, Item: item}
+}
+
+// Contains asserts that the given item is contained in the list.
+// The argument order matches slices.Contains.
+func Contains[V comparable](list []V, item V) assertion.Assertion {
+	return assertion.Contains[V]{List: list, Item: item}
 }

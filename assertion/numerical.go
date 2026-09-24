@@ -6,6 +6,7 @@ import (
 	"fmt"
 )
 
+// Positive asserts that V is greater than the zero value.
 type Positive[V cmp.Ordered] struct {
 	V V
 }
@@ -24,6 +25,7 @@ func (p Positive[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// Negative asserts that V is less than the zero value.
 type Negative[V cmp.Ordered] struct {
 	V V
 }
@@ -42,6 +44,7 @@ func (n Negative[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// Zero asserts that V is the zero value.
 type Zero[V comparable] struct {
 	V V
 }
@@ -60,6 +63,7 @@ func (z Zero[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// NotZero asserts that V is not the zero value.
 type NotZero[V comparable] struct {
 	V V
 }
@@ -78,6 +82,7 @@ func (n NotZero[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// Less asserts that A < B.
 type Less[V cmp.Ordered] struct {
 	A, B V
 }
@@ -95,6 +100,7 @@ func (l Less[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// LessOrEq asserts that A <= B.
 type LessOrEq[V cmp.Ordered] struct {
 	A, B V
 }
@@ -112,6 +118,7 @@ func (l LessOrEq[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// Greater asserts that A > B.
 type Greater[V cmp.Ordered] struct {
 	A, B V
 }
@@ -129,6 +136,7 @@ func (g Greater[V]) Check(ctx context.Context) error {
 	return nil
 }
 
+// GreaterOrEq asserts that A >= B.
 type GreaterOrEq[V cmp.Ordered] struct {
 	A, B V
 }

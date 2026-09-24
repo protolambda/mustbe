@@ -7,7 +7,9 @@ import (
 	"reflect"
 )
 
-// Equal runs a shallow-equal assertion
+// Equal runs a shallow-equal assertion, using the Go == operator.
+// Pointers, channels and interfaces are compared by identity, not by the values they reference.
+// Use DeepEqual for structural comparison.
 type Equal[V comparable] struct {
 	Expected V
 	Got      V
@@ -45,7 +47,8 @@ func (s NotEqual[V]) Check(ctx context.Context) error {
 	return nil
 }
 
-// DeepEqual runs a deep-equal assertion
+// DeepEqual runs a deep-equal assertion, using reflect.DeepEqual
+// (or bytes.Equal for byte slices, where nil and empty are equal).
 type DeepEqual[V any] struct {
 	Expected V
 	Got      V
@@ -67,12 +70,12 @@ func (s DeepEqual[V]) Check(ctx context.Context) error {
 		if bytes.Equal(a.([]byte), b.([]byte)) {
 			return nil
 		}
-		return fmt.Errorf("byte slices differ")
+		return fmt.Errorf("byte slices differ, expected: %x, got: %x", a, b)
 	}
 	if reflect.DeepEqual(expected, got) {
 		return nil
 	}
-	return fmt.Errorf("not deep-equal")
+	return fmt.Errorf("not deep-equal, expected: %+v, got: %+v", expected, got)
 }
 
 // NotDeepEqual runs a deep-not-equal assertion
@@ -95,12 +98,12 @@ func (s NotDeepEqual[V]) Check(ctx context.Context) error {
 	if _, ok := xIface.(*[]byte); ok {
 		var a, b any = unexpected, got
 		if bytes.Equal(a.([]byte), b.([]byte)) {
-			return fmt.Errorf("byte slices equal")
+			return fmt.Errorf("byte slices equal, unexpected: %x, got: %x", a, b)
 		}
 		return nil
 	}
 	if reflect.DeepEqual(unexpected, got) {
-		return fmt.Errorf("deep-equal, unexpected: %v, got: %v", unexpected, got)
+		return fmt.Errorf("deep-equal, unexpected: %+v, got: %+v", unexpected, got)
 	}
 	return nil
 }
